@@ -9,6 +9,8 @@ test_input = """
 """
 test_result = 11
 
+import requests
+
 mode = "TEST" # either TEST or TASK
 table_left = []
 table_right = []
