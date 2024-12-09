@@ -1,4 +1,5 @@
-input = """
+# Test case:
+test_input = """
 3   4
 4   3
 2   5
@@ -6,10 +7,13 @@ input = """
 3   9
 3   3
 """
-input_result = 11
+test_result = 11
 
+mode = "TEST" # either TEST or TASK
 table_left = []
 table_right = []
+distance = 0
+url = "https://adventofcode.com/2024/day/1/input"
 
 def input_to_tables(input):
     for line in input.splitlines():
@@ -18,8 +22,6 @@ def input_to_tables(input):
         buffor = line.split()
         table_left.append(buffor[0])
         table_right.append(buffor[1])
-    table_left.sort()
-    table_right.sort()
     
 def evaluate_distance(table_left, table_right):
     result = 0
@@ -30,8 +32,18 @@ def evaluate_distance(table_left, table_right):
         result = result + buffor
     return result
 
+### main:
+if mode == "TEST":
+    input = test_input
+elif mode == "TASK":
+    input = requests.get(url).text
+    
 input_to_tables(input)
-print(table_left)
-print(table_right)
-result = evaluate_distance(table_left, table_right)
-print(result == input_result)
+table_left.sort()
+table_right.sort()
+distance = evaluate_distance(table_left, table_right)
+
+if mode == "TEST":
+    print(distance == test_result)
+elif mode == "TASK":
+    print(distance)
