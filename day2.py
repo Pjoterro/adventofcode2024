@@ -54,7 +54,6 @@ def is_record_safe(record): # must be already seperated!
 def is_record_safe_broad(record):
     first_pass = is_record_safe(record)
     if first_pass["is_safe"] == True:
-        print(record)
         return True
     else:
         subrecords = []
@@ -75,9 +74,7 @@ def is_record_safe_broad(record):
         for subrecord in subrecords:
             subresult = is_record_safe(subrecord)
             if subresult["is_safe"] == True:
-                print(subrecord)
                 return True
-        print(first_pass)
         return False
             
 def filter_safe_results(all_results):
