@@ -24,52 +24,70 @@ test_safe = 2
 test_safe2 = 14
 ### End of test case ###
 
+def define_ascending_modifier(record):
+    plus_count = 0
+    minus_count = 0
+    for i in range(len(record) -1):
+        delta = (int(record[i+1]) - int(record[i]))
+        if delta > 0:
+            plus_count = plus_count + 1
+        if delta < 0:
+            minus_count = minus_count + 1
+    if plus_count > minus_count:
+        return 1
+    else:
+        return -1
+    
+def is_record_safe(record): # must be already seperated!
+    res_bool = True
+    res_index = -1
+    asc_mod = define_ascending_modifier(record)
+    for i in range(len(record) -1):
+        delta = (int(record[i+1]) - int(record[i])) * asc_mod
+        if (delta < 1 or delta > 3):
+            res_index = i
+            res_bool = False
+            break
+    result = {"is_safe": res_bool, "index": res_index}
+    return result
+    
+def is_record_safe_broad(record):
+    first_pass = is_record_safe(record)
+    if first_pass["is_safe"] == True:
+        print(record)
+        return True
+    else:
+        subrecords = []
+        
+        if first_pass["index"] >= 1:
+            subrec0 = record.copy()
+            subrec0.pop(first_pass["index"] - 1)
+            subrecords.append(subrec0)
+            
+        subrec1 = record.copy()
+        subrec1.pop(first_pass["index"])
+        subrecords.append(subrec1)
+        
+        subrec2 = record.copy()
+        subrec2.pop(first_pass["index"] + 1)
+        subrecords.append(subrec2)
+        
+        for subrecord in subrecords:
+            subresult = is_record_safe(subrecord)
+            if subresult["is_safe"] == True:
+                print(subrecord)
+                return True
+        print(first_pass)
+        return False
+            
 def filter_safe_results(all_results):
     results = []
     for line in all_results.splitlines():
         if (line == ""):
             continue
-        if is_record_safe(line.split()):
+        if is_record_safe_broad(line.split()):
             results.append(line)
     return results
-
-def is_record_safe(array):
-    recheck_flag = False
-    recheck_index = 0
-    ascending_modifier = 1
-    if int(array[0]) > int(array[-1]):
-        ascending_modifier = -1
-    for i in range(len(array) -1):
-        delta = (int(array[i+1]) - int(array[i])) * ascending_modifier
-        if (delta < 1 or delta > 3):
-            if recheck_flag:
-                print("----TO IGNORE\nindex: " + str(i) + "\n" + str(array))
-                return False
-            else:
-                recheck_flag = True
-                recheck_index = i
-    if not recheck_flag:
-        return True
-    print("----TO RECHECK\n" + str(array))
-    sub_array_1 = array.copy()
-    sub_array_2 = array.copy()
-    sub_array_1.pop(recheck_index)
-    flag_1 = True
-    sub_array_2 = array
-    sub_array_2.pop(recheck_index + 1)
-    flag_2 = True
-    for i in range(len(sub_array_1) - 1):
-        delta = (int(sub_array_1[i+1]) - int(sub_array_1[i])) * ascending_modifier
-        if (delta < 1 or delta > 3):
-            flag_1 = False
-            break
-    for i in range(len(sub_array_2) - 1):
-        delta = (int(sub_array_2[i+1]) - int(sub_array_2[i])) * ascending_modifier
-        if (delta < 1 or delta > 3):
-            flag_2 = False
-            break
-    print("index: " + str(recheck_index) + " | bools: " + str(flag_1 or flag_2))
-    return (flag_1 or flag_2)
 
 
 ### main: ###
