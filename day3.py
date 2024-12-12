@@ -15,6 +15,7 @@ mul_reg = r'mul\(\d+,\d+\)'
 dont_do_reg = r'don\'t\(\).*do\(\)'
 do_reg = r'do\(\)'
 dont_reg = r'don\'t\(\)'
+mul_dont_do_reg = r'(mul\(\d+,\d+\)|don\'t\(\)|do\(\))'
 
 def multiply(single_mul): #w formacie string = "mul(int1,int2)"
     mul_red = single_mul.replace('mul(', '').replace(')', '')
@@ -25,10 +26,29 @@ def get_all_muls(input_text):
     result = re.findall(mul_reg, input_text)
     return result
 
-def get_do_muls(input_text):
+def get_do_and_muls(input_text):
     result = []
-    for part in re.split(dont_do_reg, input_text):
-        result.extend(re.findall(mul_reg, part))
+    for line in input_text.splitlines():
+        result.append(re.findall(mul_dont_do_reg, line))
+    return result
+
+def get_only_do_muls(input_array_of_arrays):
+    result = []
+    do_flag = True
+    for array in input_array_of_arrays:
+        for record in array:
+            if do_flag:
+                if "mul(" in record:
+                    print("MUL found")
+                    result.append(record)
+                elif "don't(" in record:
+                    print("DON'T found")
+                    do_flag = False
+            else:
+                if "do(" in record:
+                    print("DO found")
+                    do_flag = True
+        print("NEW LINE")
     return result
 
 ### main: ###
@@ -38,7 +58,8 @@ elif mode == "TASK":
     file = open(input_file_path)
     input = file.read()
 
-buffer = get_do_muls(input)
+buffer = get_do_and_muls(input)
+buffer = get_only_do_muls(buffer)
 res = 0
 for record in buffer:
     res = res + multiply(record)
