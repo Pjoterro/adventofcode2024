@@ -42,7 +42,6 @@ def gen_inputs(text_input):
             if input_map[y][x] == all_dir[starting_pos[2]]:
                 starting_pos[0] = x
                 starting_pos[1] = y
-    print("Inputs generated")
 
 def is_guard_at_border(curr_pos):
     global map_size
@@ -95,7 +94,8 @@ def search_for_loops(path):
     global input_map
     global starting_pos
     results = []
-    print("cases to check: " + str(len(path)))
+    cases_to_check = len(path)
+    #print("cases to check: " + str(cases_to_check))
     i = 0
     for cord in path:
         i = i+1
@@ -107,9 +107,9 @@ def search_for_loops(path):
             if not is_possible_to_exit(working_map)[1]:
                 results.append(cord)
             working_map.clear()
-        if i % 200 == 0:
-            print("no. of cases checked: " + str(i))
-    print(len(results))
+        if i % 10 == 0:
+            done_percentage = (i / cases_to_check)*100
+            print("progress: " + str(round(done_percentage, 2)) + "%")
     return results
 
 ### main: ###
