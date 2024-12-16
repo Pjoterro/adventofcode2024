@@ -81,7 +81,7 @@ for rec in gen_input(input):
     if is_record_possible(rec):
         result = result + rec[0]
     i = i + 1
-    if i % 5 == 0:
+    if i % 50 == 0:
         print("progress: " + str(round((i/m)*100, 2)) + "%")
 print(result)
 
