@@ -19,7 +19,7 @@ test_input = """............
 ............"""
 
 test_1 = 14
-test_2 = 7
+test_2 = 34
 ### End of test case ###
 
 antena_map = []
@@ -46,8 +46,6 @@ def get_all_antenas(): # return [A, B, C...]
         for x in range(map_size[0]):
             if (not antena_map[y][x] == '.') and (antena_map[y][x] not in antena_type):
                 antena_type.append(antena_map[y][x])
-                print("added new antena" + antena_map[y][x])
-    print(antena_type)
     return antena_type
 
 def get_all_antena_cord(antena_type): # [[x1, y1], [x2, y2]...]
@@ -57,7 +55,6 @@ def get_all_antena_cord(antena_type): # [[x1, y1], [x2, y2]...]
         for x in range(len(antena_map[y])):
             if antena_map[y][x] == antena_type:
                 antena_cord.append([x, y])
-    print(antena_cord)
     return antena_cord
 
 def calc_antena_inter(antena_type): # [[x1, y1], [x2, y2]...]
@@ -70,14 +67,42 @@ def calc_antena_inter(antena_type): # [[x1, y1], [x2, y2]...]
             dy = all_antena_cord[a2][1] - all_antena_cord[a1][1]
             inter1 = [all_antena_cord[a2][0] + dx, all_antena_cord[a2][1] + dy]
             inter2 = [all_antena_cord[a1][0] - dx, all_antena_cord[a1][1] - dy]
-            print(antena_type + ": inter1: " + str(inter1) + "  |  inter2: " + str(inter2))
             if is_on_map(inter1):
-                print("inter1 added")
                 antena_inter.append(inter1)
             if is_on_map(inter2):
-                print("inter2 added")
                 antena_inter.append(inter2)
     return antena_inter
+
+def calc_antena_inter_harmonic(antena_type): # [[x1, y1], [x2, y2]...]
+    global antena_map
+    all_antena_cord = get_all_antena_cord(antena_type)
+    antena_inter = []
+    for a1 in range(len(all_antena_cord)):
+        for a2 in range(a1+1, len(all_antena_cord)):
+            dx = all_antena_cord[a2][0] - all_antena_cord[a1][0]
+            dy = all_antena_cord[a2][1] - all_antena_cord[a1][1]
+            inter_flag = True
+            inter = [all_antena_cord[a2][0], all_antena_cord[a2][1]]
+            while inter_flag:
+                if is_on_map(inter):
+                    antena_inter.append(copy.deepcopy(inter))
+                    inter[0] = inter[0] + dx
+                    inter[1] = inter[1] + dy
+                else:
+                    inter_flag = False
+                    break
+            inter_flag = True
+            inter = [all_antena_cord[a1][0], all_antena_cord[a1][1]]
+            while inter_flag:
+                if is_on_map(inter):
+                    antena_inter.append(copy.deepcopy(inter))
+                    inter[0] = inter[0] - dx
+                    inter[1] = inter[1] - dy
+                else:
+                    inter_flag = False
+                    break
+    return antena_inter
+
 
 def is_on_map(inter):
     global map_size
@@ -89,6 +114,15 @@ def get_inter_amount():
     all_unique_inter = []
     for antena in get_all_antenas():
         antena_inter = calc_antena_inter(antena)
+        for inter in antena_inter:
+            if inter not in all_unique_inter:
+                all_unique_inter.append(inter)
+    return len(all_unique_inter)
+
+def get_inter_amount_harmonic():
+    all_unique_inter = []
+    for antena in get_all_antenas():
+        antena_inter = calc_antena_inter_harmonic(antena)
         for inter in antena_inter:
             if inter not in all_unique_inter:
                 all_unique_inter.append(inter)
@@ -106,6 +140,9 @@ input_to_2darray(input)
 buffor = get_inter_amount()
 print("buffor: " + str(buffor))
 
+buffer2 = get_inter_amount_harmonic()
+print("buffer2: " + str(buffer2))
+
 if mode == "TEST":
     print("test status: " + str(test_1 == buffor))
-#    print("test status: " + str(test_2 == result))
+    print("test status: " + str(test_2 == buffer2))
