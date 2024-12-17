@@ -8,7 +8,7 @@ input_file_path = "./day9_input.txt"
 test_input = """2333133121414131402"""
 
 test_1 = 1928
-test_2 = 34
+test_2 = 2858
 ### End of test case ###
 
 drive = []
@@ -27,6 +27,9 @@ def expand_drive(input):
         else:
             for j in range(int(input[i])):
                 drive.append('.')
+
+def expand_drive_v2(input):
+    pass
 
 def drive_to_string():
     global drive
