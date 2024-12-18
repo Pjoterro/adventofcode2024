@@ -6,8 +6,10 @@ input_file_path = "./day9_input.txt"
 
 ### Start of test case ###
 test_input = """2333133121414131402"""
+test_input2 = """9953877292941"""
 
 test_1 = 1928
+test2_2 = 5768
 test_2 = 2858
 ### End of test case ###
 
@@ -30,6 +32,7 @@ def expand_drive(input):
                 drive.append('.')
 
 def expand_drive2(input):
+    #print(input)
     global drive2
     id = 0
     for i in range(len(input)):
@@ -55,7 +58,7 @@ def drive2_to_string():
     for record in drive2:
         for count in range(record[1]):
             result = result + str(record[0])
-    print(result)
+    return result
 
 def defrag():
     global drive
@@ -77,24 +80,27 @@ def defrag():
             break
 
 def defrag2():
-    print("defrag2() start")
+    #print(drive2_to_string())
+    print("defrag2()")
     global drive2 # [[char, count, moved_flag], [char, count, moved_flag]...]
-    for i_b in range(len(drive2)-1, 0, -1):
-        #print("i_b: " + str(i_b) + " = " + str(drive2[i_b]))
-        drive2_to_string()
+    limit = len(drive2)
+    for i_b in range(limit-1, 0, -1):
+        if i_b % 1000 == 0:
+            print("progress: " + str(round(((limit-i_b)*100)/limit, 2)) + "%")
+        #print(drive2)
+        #print(drive2_to_string())
         if drive2[i_b][2]:
             continue
         i_f = 0
-        #print("i_f: " + str(drive2[i_f]) + "  |  i_b: " + str(drive2[i_b]))
         while i_f < len(drive2):
-            if drive2[i_f][1] > drive2[i_b][1] and drive2[i_f][0] == '.':
+            if drive2[i_f][1] > drive2[i_b][1] and drive2[i_f][0] == '.' and not drive2[i_b][0] == '.':
                 buffor = copy.deepcopy(drive2[i_f][1] - drive2[i_b][1])
                 drive2[i_f][0] = copy.deepcopy(drive2[i_b][0])
                 drive2[i_f][1] = copy.deepcopy(drive2[i_b][1])
                 drive2.insert(i_f + 1, ['.', copy.deepcopy(buffor), True])
                 drive2[i_b + 1][0] = '.'
                 break
-            elif drive2[i_f][1] == drive2[i_b][1] and drive2[i_f][0] == '.':
+            elif drive2[i_f][1] == drive2[i_b][1] and drive2[i_f][0] == '.' and not drive2[i_b][0] == '.':
                 drive2[i_f][0] = copy.deepcopy(drive2[i_b][0])
                 drive2[i_b][0] = '.'
                 break
@@ -102,7 +108,7 @@ def defrag2():
                 i_f = i_f + 1
             if i_f >= i_b:
                 break
-    print("defrag2() stop")
+    #print(drive2_to_string())
 
 def calc_checksum():
     global drive
@@ -115,6 +121,28 @@ def calc_checksum():
         i = i + 1
     return result
 
+def calc_checksum2():
+    drive_content = drive2_to_string()
+    result = 0
+    for i in range(len(drive_content)):
+        if drive_content[i] == '.':
+            continue
+        print(str(result) + " += " + str(i) + "*" + str(drive_content[i]))
+        result = result + (int(drive_content[i]) * i)
+    return result
+
+def calc_checksum3():
+    global drive2
+    result = 0
+    for i in range(len(drive2)):
+        if drive2[i][0] == '.':
+            continue
+        for j in range(int(drive2[i][1])):
+            #result = result + i*int(drive2[i][0])
+            print(str(result) + " += " + str(i) + "*" + str(drive2[i][0]))
+            result = result + i*int(drive2[i][0])
+    return result
+
 ### main: ###
 if mode == "TEST":
     input = test_input
@@ -123,13 +151,13 @@ elif mode == "TASK":
     input = file.read()
 
 expand_drive2(input)
-print("Before defrag:")
-drive2_to_string()
 defrag2()
-print("After defrag:")
-drive2_to_string()
+print(drive2_to_string())
+buffor2 = calc_checksum2()
+buffor = calc_checksum3()
+print(buffor)
 
 if mode == "TEST":
     pass
     #print("test status: " + str(test_1 == result_1))
-    #print("test status: " + str(test_2 == result_2))
+    print("test status: " + str(test_2 == buffor))
