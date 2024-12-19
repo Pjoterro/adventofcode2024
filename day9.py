@@ -6,10 +6,8 @@ input_file_path = "./day9_input.txt"
 
 ### Start of test case ###
 test_input = """2333133121414131402"""
-test_input2 = """9953877292941"""
 
 test_1 = 1928
-test2_2 = 5768
 test_2 = 2858
 ### End of test case ###
 
@@ -32,7 +30,6 @@ def expand_drive(input):
                 drive.append('.')
 
 def expand_drive2(input):
-    #print(input)
     global drive2
     id = 0
     for i in range(len(input)):
@@ -80,15 +77,11 @@ def defrag():
             break
 
 def defrag2():
-    #print(drive2_to_string())
-    print("defrag2()")
     global drive2 # [[char, count, moved_flag], [char, count, moved_flag]...]
     limit = len(drive2)
     for i_b in range(limit-1, 0, -1):
         if i_b % 1000 == 0:
             print("progress: " + str(round(((limit-i_b)*100)/limit, 2)) + "%")
-        #print(drive2)
-        #print(drive2_to_string())
         if drive2[i_b][2]:
             continue
         i_f = 0
@@ -108,7 +101,6 @@ def defrag2():
                 i_f = i_f + 1
             if i_f >= i_b:
                 break
-    #print(drive2_to_string())
 
 def calc_checksum():
     global drive
@@ -127,20 +119,21 @@ def calc_checksum2():
     for i in range(len(drive_content)):
         if drive_content[i] == '.':
             continue
-        print(str(result) + " += " + str(i) + "*" + str(drive_content[i]))
         result = result + (int(drive_content[i]) * i)
     return result
 
 def calc_checksum3():
     global drive2
     result = 0
-    for i in range(len(drive2)):
-        if drive2[i][0] == '.':
-            continue
-        for j in range(int(drive2[i][1])):
-            #result = result + i*int(drive2[i][0])
-            print(str(result) + " += " + str(i) + "*" + str(drive2[i][0]))
-            result = result + i*int(drive2[i][0])
+    i = 0
+    for record in drive2:
+        if not record[0] == '.':
+            for j in range(record[1]):
+                result = result + (int(record[0]) * i)
+                i = i + 1
+        else:
+            for j in range(record[1]):
+                i = i + 1
     return result
 
 ### main: ###
@@ -152,12 +145,10 @@ elif mode == "TASK":
 
 expand_drive2(input)
 defrag2()
-print(drive2_to_string())
-buffor2 = calc_checksum2()
-buffor = calc_checksum3()
-print(buffor)
+buffor3 = calc_checksum3()
+print(buffor3)
 
 if mode == "TEST":
     pass
     #print("test status: " + str(test_1 == result_1))
-    print("test status: " + str(test_2 == buffor))
+    print("test status: " + str(test_2 == buffor3))
