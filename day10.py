@@ -18,7 +18,52 @@ test_1 = 36
 test_2 = 2858
 ### End of test case ###
 
+map = []
 
+def input_to_2darray(input):
+    global map
+    for line in input.splitlines():
+        map_line = []
+        if line == "":
+            continue
+        for char in line:
+            map_line.append(int(char))
+        map.append(map_line)
+
+def find_every_zero():
+    global map
+    result = []
+    for y in range(len(map)):
+        for x in range(len(map[y])):
+            if map[y][x] == 0:
+                result.append([x, y])
+    return result
+
+def trail_till_nine(el_cords):
+    global map
+    result = []
+    el_val = map[el_cords[1]][el_cords[0]]
+
+    p1 = [el_cords[0] + 1, el_cords[1]]
+    p2 = [el_cords[0], el_cords[1] - 1]
+    p3 = [el_cords[0] - 1, el_cords[1]]
+    p4 = [el_cords[0], el_cords[1] + 1]
+    neighbours = [p1, p2, p3, p4]
+
+    for p in neighbours:
+        if is_in_bounds(p) and map[p[1]][p[0]] == el_val + 1:
+            if el_val + 1 == 9:
+                result.append(p)
+            else:
+                for next_step in trail_till_nine(p):
+                    result.append(next_step)
+    return result
+
+def is_in_bounds(el_cords):
+    global map
+    is_x = el_cords[0] >= 0 and el_cords[0] < len(map[1])
+    is_y = el_cords[1] >= 0 and el_cords[1] < len(map)
+    return is_x and is_y
 
 ### main: ###
 if mode == "TEST":
@@ -27,9 +72,12 @@ elif mode == "TASK":
     file = open(input_file_path)
     input = file.read()
 
-
+input_to_2darray(input)
+result1 = 0
+for zero in find_every_zero():
+    result1 = result1 + len(trail_till_nine(zero))
+print("result1: " + str(result1))
 
 if mode == "TEST":
-    pass
-#    print("test status: " + str(test_1 == result_1))
+    print("test status: " + str(test_1 == result1))
 #    print("test status: " + str(test_2 == buffor3))
