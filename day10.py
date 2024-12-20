@@ -52,11 +52,10 @@ def trail_till_nine(el_cords):
 
     for p in neighbours:
         if is_in_bounds(p) and map[p[1]][p[0]] == el_val + 1:
-            if el_val + 1 == 9:
+            if (el_val + 1 == 9) and p not in result:
                 result.append(p)
             else:
-                for next_step in trail_till_nine(p):
-                    result.append(next_step)
+                result = result + trail_till_nine(p)
     return result
 
 def is_in_bounds(el_cords):
@@ -75,6 +74,7 @@ elif mode == "TASK":
 input_to_2darray(input)
 result1 = 0
 for zero in find_every_zero():
+    print(trail_till_nine(zero))
     result1 = result1 + len(trail_till_nine(zero))
 print("result1: " + str(result1))
 
