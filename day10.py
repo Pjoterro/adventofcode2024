@@ -15,7 +15,7 @@ test_input = """89010123
 10456732"""
 
 test_1 = 36
-test_2 = 2858
+test_2 = 81
 ### End of test case ###
 
 map = []
@@ -52,10 +52,19 @@ def trail_till_nine(el_cords):
 
     for p in neighbours:
         if is_in_bounds(p) and map[p[1]][p[0]] == el_val + 1:
-            if (el_val + 1 == 9) and p not in result:
+            if (el_val + 1 == 9) and (not p in result):
                 result.append(p)
             else:
                 result = result + trail_till_nine(p)
+# return is depended which part of the task we are doing
+#    return remove_dups(result)
+    return result
+
+def remove_dups(array):
+    result = []
+    for item in array:
+        if not item in result:
+            result.append(item)
     return result
 
 def is_in_bounds(el_cords):
@@ -79,5 +88,5 @@ for zero in find_every_zero():
 print("result1: " + str(result1))
 
 if mode == "TEST":
-    print("test status: " + str(test_1 == result1))
+    print("test status: " + str(test_2 == result1))
 #    print("test status: " + str(test_2 == buffor3))
